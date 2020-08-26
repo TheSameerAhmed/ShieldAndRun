@@ -110,7 +110,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61b9f5a4b1a193d49baf255dea15eff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 100
   target: {fileID: 0}
   flash: {fileID: 635824421856563546}
   impact: {fileID: 100006, guid: 0438351a6e6422d43a09930e9be00ee9, type: 3}
@@ -121,6 +120,7 @@ MonoBehaviour:
   shootingRange: {fileID: 0}
   deviation: 0
   targetDisplay: {fileID: 0}
+  testValue: 9
 --- !u!1 &635824420886962833
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,13 +227,13 @@ LineRenderer:
   - {x: 0, y: 0, z: 2}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.25
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.17391306
+        value: 0.0982151
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -273,7 +273,7 @@ LineRenderer:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
-    numCapVertices: 2
+    numCapVertices: 4
     alignment: 0
     textureMode: 0
     shadowBias: 0.5

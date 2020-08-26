@@ -17,14 +17,17 @@ public class InRange : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        Time.timeScale = 0.2f;
-        Time.fixedDeltaTime = fixedDelta * Time.timeScale;
+        if (collider.CompareTag("Player"))
+        {
+            Time.timeScale = 0.2f;
+            Time.fixedDeltaTime = fixedDelta * Time.timeScale;
 
-        Debug.Log($"Shoot in {shooter.gameObject.name}");
-        Debug.Log($"Collider in {collider.gameObject.name}");
-        GetComponent<BoxCollider>().enabled = false;
+            //Debug.Log($"Shoot in {shooter.gameObject.name}");
+            //Debug.Log($"Collider in {collider.gameObject.name}");
+            GetComponent<BoxCollider>().enabled = false;
 
-        StartCoroutine(shooter.Shoot());
+            StartCoroutine(shooter.Shoot());
+        }
         //for (int i = 0; i < numberOfShots; i++)
         //{
         //    StartCoroutine(shooter.Shoot());

@@ -14,14 +14,17 @@ public class OutRange : MonoBehaviour
         fixedDelta = Time.fixedDeltaTime;
     }
 
-    void OnTriggerEnter()
+    void OnTriggerEnter(Collider collider)
     {
-        Time.timeScale = 1;
-        Time.fixedDeltaTime = fixedDelta * Time.timeScale;
-        displayTarget.text = "";
+        if (collider.CompareTag("Player"))
+        {
+            Time.timeScale = 1;
+            Time.fixedDeltaTime = fixedDelta * Time.timeScale;
+            displayTarget.text = "";
 
-        GetComponent<BoxCollider>().enabled = false;
-        shooter.StopShooting();
+            GetComponent<BoxCollider>().enabled = false;
+            shooter.StopShooting();
+        }
     }
 
 
