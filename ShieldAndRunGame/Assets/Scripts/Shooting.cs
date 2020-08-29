@@ -9,9 +9,7 @@ using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 public class Shooting : MonoBehaviour
-{
-
-   // [SerializeField] float range = 100f;    
+{   
     [SerializeField] PlayerController target;
     [SerializeField] ParticleSystem flash;
     [SerializeField] GameObject impact;
@@ -22,6 +20,7 @@ public class Shooting : MonoBehaviour
     [SerializeField] float deviation;
     [SerializeField] Text targetDisplay;
     [SerializeField] int testValue;
+    [SerializeField] GameTimeManager gameTimeManager;
 
     Vector3 targetPoint;
     Quaternion targetRotation;
@@ -34,12 +33,8 @@ public class Shooting : MonoBehaviour
 
     float TimeCount = 0.0f;
 
-    float fixedDeltaTime;
-
     void Awake()
     {
-        fixedDelta = Time.fixedDeltaTime;
-
         //for (int i = 0; i < 5; i++)
         //    targetIndex[i] = Random.Range(5, 10);
 
@@ -47,10 +42,6 @@ public class Shooting : MonoBehaviour
             targetIndex[i] = testValue;
     }
 
-    void Start()
-    {
-        fixedDeltaTime = Time.fixedDeltaTime;                
-    }
     //void Update()
     //{
 
@@ -109,9 +100,9 @@ public class Shooting : MonoBehaviour
 
             if (hit.collider.gameObject.name == "Player")
             {
-                Debug.Log("hit the player bitch!");
-                //target.forwardMovement = 0;
-                //hitPlayer = true;
+                Debug.Log("hit the player bitch!");                
+
+                //gameTimeManager.HaltTime();
 
                 bulletLine.SetPosition(0, ray.origin);
                 bulletLine.SetPosition(1, hit.point);
@@ -134,14 +125,7 @@ public class Shooting : MonoBehaviour
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
 
-                
-                //if (hit.collider.gameObject.name == "Target1")
-                //{
-                //    Debug.Log("Target HIT");
-                //    Time.timeScale = 0;
-                //}
             }
-            //Time.timeScale = 0;
         }
         else
         {
@@ -156,8 +140,8 @@ public class Shooting : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         bulletLine.enabled = false;
 
-        Time.timeScale = 1;
-        Time.fixedDeltaTime = fixedDelta * Time.timeScale;
+
+        gameTimeManager.NormalTimeRestore();
 
         //if (hitPlayer) 
         //    Time.timeScale = 0;
@@ -177,7 +161,7 @@ public class Shooting : MonoBehaviour
     IEnumerator DisplayTarget()
     {
         targetDisplay.text = (targetIndex[index]-4).ToString();
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(.3f);
     }
 
     //void Shoot1()

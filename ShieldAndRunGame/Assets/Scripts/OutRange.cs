@@ -8,18 +8,23 @@ public class OutRange : MonoBehaviour
 
     [SerializeField] Shooting shooter;
     [SerializeField] Text displayTarget;
+    [SerializeField] GameTimeManager gameTimeManager;
+
+    
     float fixedDelta;
+    bool inSlowTimePowerUp;
+
     void Awake()
     {
         fixedDelta = Time.fixedDeltaTime;
+        inSlowTimePowerUp = false;
     }
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.CompareTag("Player"))
+        if (collider.CompareTag("Player") && inSlowTimePowerUp == false)
         {
-            Time.timeScale = 1;
-            Time.fixedDeltaTime = fixedDelta * Time.timeScale;
+            
             displayTarget.text = "";
 
             GetComponent<BoxCollider>().enabled = false;

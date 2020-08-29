@@ -6,33 +6,20 @@ public class InRange : MonoBehaviour
 {
 
     [SerializeField] Shooting shooter;
-    [SerializeField] int numberOfShots = 5;
-    float fixedDelta;
+    [SerializeField] GameTimeManager gameTimeManager;
+    [SerializeField] CoinManager coinManager;
     
-
-    void Awake()
-    {
-        fixedDelta = Time.fixedDeltaTime;
-    }
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.CompareTag("Player"))
+        if (collider.CompareTag("Player") && coinManager.inSlowTimePower == false)
         {
-            Time.timeScale = 0.2f;
-            Time.fixedDeltaTime = fixedDelta * Time.timeScale;
+            gameTimeManager.SlowTimeDown(0.2f);
 
-            //Debug.Log($"Shoot in {shooter.gameObject.name}");
-            //Debug.Log($"Collider in {collider.gameObject.name}");
             GetComponent<BoxCollider>().enabled = false;
 
             StartCoroutine(shooter.Shoot());
         }
-        //for (int i = 0; i < numberOfShots; i++)
-        //{
-        //    StartCoroutine(shooter.Shoot());
-        //    yield return new WaitForSeconds(.4f);        
-        //}
     }
 
     IEnumerator Waiting()
