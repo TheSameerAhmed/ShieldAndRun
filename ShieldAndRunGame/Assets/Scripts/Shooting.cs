@@ -70,6 +70,8 @@ public class Shooting : MonoBehaviour
         flash.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, TimeCount);
         firePoint.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, TimeCount);
 
+        Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
+
         TimeCount += Time.deltaTime * 0.8f;
     }
 
@@ -100,21 +102,52 @@ public class Shooting : MonoBehaviour
 
             if (hit.collider.gameObject.name == "Player")
             {
-                Debug.Log("hit the player bitch!");                
+                Debug.Log("hit the player bitch!");
 
                 //gameTimeManager.HaltTime();
 
                 bulletLine.SetPosition(0, ray.origin);
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
+
+                int c = 0;
+                while(c < 100)
+                {
+                    Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
+                    Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
+                    Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
+
+                    bulletLine.SetPosition(0, ray.origin);
+                    bulletLine.SetPosition(1, secondaryHits.point);
+                    bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
+                    c++;
+                }
+                Debug.Log($"c = {c}");
+
             }
             else if (hit.collider.gameObject.name == "RightShield" || hit.collider.gameObject.name == "LeftShield")
             {
                 //Debug.Log("Shield Touch");
+
                 bulletLine.SetPosition(0, ray.origin);
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
                 //shieldCheck = true;
+
+                int c = 0;
+
+                while (c < 100)
+                {
+                    Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
+                    Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
+                    Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
+
+                    bulletLine.SetPosition(0, ray.origin);
+                    bulletLine.SetPosition(1, secondaryHits.point);
+                    bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
+                    c++;
+                }
+                Debug.Log($"c = {c}");
             }
             else
             {
@@ -125,6 +158,22 @@ public class Shooting : MonoBehaviour
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
 
+
+                int c = 0;
+
+                while (c < 100)
+                {
+                    Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
+                    Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
+                    Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
+                    bulletLine.SetPosition(0, ray.origin);
+                    bulletLine.SetPosition(1, secondaryHits.point);
+                    bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
+                    c++;
+                }
+
+                Debug.Log($"c = {c}");
+                
             }
         }
         else
@@ -137,7 +186,7 @@ public class Shooting : MonoBehaviour
 
         bulletLine.enabled = true;
         index++;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         bulletLine.enabled = false;
 
 

@@ -23,8 +23,8 @@ public class CoinManager : MonoBehaviour
  
     float fixedDelta;
     float slowness = 0.1f;
-    
-    public float slowTime = 2f;
+
+    public float slowTime = 8f;
 
     void Awake()
     {
@@ -43,7 +43,12 @@ public class CoinManager : MonoBehaviour
         }
         else if(Input.GetKeyDown(KeyCode.J) && slowTimePowerUp)
         {
+            Debug.Log("Starting coroutine");
             StartCoroutine(SlowTime());
+        }
+        else if(Input.GetKeyDown(KeyCode.J))
+        {
+            Debug.Log(slowTimePowerUp);
         }
 
     }
@@ -94,6 +99,7 @@ public class CoinManager : MonoBehaviour
 
     IEnumerator SlowTime()
     {
+        Debug.Log("In slow time");
         coins.coinsColected -= 3;
         inSlowTimePower = true;
 
@@ -108,9 +114,6 @@ public class CoinManager : MonoBehaviour
 
         gameTimeManager.SlowTimeDown(slowness);
 
-        //Time.timeScale = slowness;
-        //Time.fixedDeltaTime = fixedDelta * Time.timeScale;
-
         yield return new WaitForSecondsRealtime(slowTime);        
         
         Debug.Log("Done Slowing time down");
@@ -118,8 +121,8 @@ public class CoinManager : MonoBehaviour
         UpdateDisplayCoins();               // Check new status of power ups and their validation state.
 
         CheckPowers();
-        
 
+        Destroy(dialCreated, 0.1f);
         inSlowTimePower = false;
         gameTimeManager.NormalTimeRestore();  // FIX when player is within in and out then dont restore normal time!      
         

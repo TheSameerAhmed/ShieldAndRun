@@ -20,7 +20,6 @@ public class Coin : MonoBehaviour
 
         playerStats.coinsColected++;
         coinManager.UpdateDisplayCoins();
-        Debug.Log($"collected coin {playerStats.coinsColected}");
         
         Destroy(gameObject);
         Destroy(effect, 1.0f);

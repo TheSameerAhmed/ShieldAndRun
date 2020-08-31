@@ -29,6 +29,9 @@ public class Dial : MonoBehaviour
         {
             timeLeft -= Time.unscaledDeltaTime;
             timerDial.fillAmount = timeLeft / coinManager.slowTime;
+            Debug.Log(timerDial.fillAmount);
+            Debug.Log($"tl {timerDial.fillAmount}");
+            Debug.Log($"cs {coinManager.slowTime}");
         }
         if (timeLeft < 0 && startTimer)
             startTimer = false;

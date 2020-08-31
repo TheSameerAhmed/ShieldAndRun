@@ -52,4 +52,6 @@ MonoBehaviour:
   player: {fileID: 0}
   dial: {fileID: 625282819582822805, guid: d87193e46f337874385a46a01aa1e9ae, type: 3}
   canvas: {fileID: 0}
-  slowTime: 3
+  gameTimeManager: {fileID: 0}
+  inSlowTimePower: 0
+  slowTime: 8
