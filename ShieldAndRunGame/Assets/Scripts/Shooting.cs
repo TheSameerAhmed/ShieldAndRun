@@ -28,6 +28,8 @@ public class Shooting : MonoBehaviour
     int index = 0;
     float fixedDelta;
     int reflectionDepth = 5;
+    bool inShoot = false;
+    Ray ray;
 
     Vector3 pos;
 
@@ -70,12 +72,53 @@ public class Shooting : MonoBehaviour
         flash.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, TimeCount);
         firePoint.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, TimeCount);
 
-        Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
+        //Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
+
+        if (inShoot)
+        {
+            Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
+            Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
+            //Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);            
+
+            if (secondaryHits.collider != null)
+            {
+                //Debug.Log("In repeated laser");
+                bulletLine.SetPosition(0, ray.origin);
+                bulletLine.SetPosition(1, secondaryHits.point);
+                bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
+            }
+        }
 
         TimeCount += Time.deltaTime * 0.8f;
+
     }
 
+    IEnumerator checkWait()
+    {
+        Debug.Log("Inside checkWait");
+        bulletLine.enabled = true;
+        int c = 0;
+        while (c < 100)
+        {
+            Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
+            Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
+            Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
 
+            if (secondaryHits.collider != null)
+            {
+                Debug.Log("In repeated laser");
+                bulletLine.SetPosition(0, ray.origin);
+                bulletLine.SetPosition(1, secondaryHits.point);
+                bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
+            }
+            else
+                break;
+            yield return new WaitForSeconds(0.5f);
+            c++;
+        }
+       
+        bulletLine.enabled = false;
+    }
 
     public IEnumerator Shoot()
     {
@@ -84,95 +127,50 @@ public class Shooting : MonoBehaviour
 
         yield return StartCoroutine(DisplayTarget());
 
-        Ray ray = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
+        ray = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
         
-        Physics.Raycast(ray, out RaycastHit hit);
-
-       // bool hitPlayer = false, shieldCheck = false;
+        Physics.Raycast(ray, out RaycastHit hit);       
 
         if (hit.collider != null)
-        {
+        {            
             Debug.Log($"Shooter hit: {hit.collider.gameObject.name}, Shooter name: {gameObject.name}");
 
-            if (hit.collider.gameObject.CompareTag("Player") || Convert.ToInt32(hit.collider.gameObject.tag) != targetIndex[index] - 4)
-            {
-                Debug.Log($"Incorrect hit at {hit.collider.gameObject.tag} by {gameObject.name}");
-                //Time.timeScale = 0;
-            }
+            //if (hit.collider.gameObject.CompareTag("Player") || Convert.ToInt32(hit.collider.gameObject.tag) != targetIndex[index] - 4)
+            //{
+            //    Debug.Log($"Incorrect hit at {hit.collider.gameObject.tag} by {gameObject.name}");
+            //    //Time.timeScale = 0;
+            //}
 
             if (hit.collider.gameObject.name == "Player")
             {
                 Debug.Log("hit the player bitch!");
 
-                //gameTimeManager.HaltTime();
+                gameTimeManager.HaltTime();
 
                 bulletLine.SetPosition(0, ray.origin);
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
-
-                int c = 0;
-                while(c < 100)
-                {
-                    Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
-                    Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
-                    Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
-
-                    bulletLine.SetPosition(0, ray.origin);
-                    bulletLine.SetPosition(1, secondaryHits.point);
-                    bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
-                    c++;
-                }
-                Debug.Log($"c = {c}");
-
             }
             else if (hit.collider.gameObject.name == "RightShield" || hit.collider.gameObject.name == "LeftShield")
             {
                 //Debug.Log("Shield Touch");
+                inShoot = true;
 
                 bulletLine.SetPosition(0, ray.origin);
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
-                //shieldCheck = true;
-
-                int c = 0;
-
-                while (c < 100)
-                {
-                    Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
-                    Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
-                    Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
-
-                    bulletLine.SetPosition(0, ray.origin);
-                    bulletLine.SetPosition(1, secondaryHits.point);
-                    bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
-                    c++;
-                }
-                Debug.Log($"c = {c}");
             }
             else
             {
 
-                //Debug.Log("SOME object is hit");
+                Debug.Log("SOME target is hit");
+                if((Convert.ToInt32(hit.collider.gameObject.tag) != targetIndex[index] - 4) && (Convert.ToInt32(hit.collider.gameObject.tag) != targetIndex[index] - 5))
+                    gameTimeManager.HaltTime();
 
                 bulletLine.SetPosition(0, ray.origin);
                 bulletLine.SetPosition(1, hit.point);
                 bulletLine.SetPosition(2, (hit.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), hit.normal))));
 
-
-                int c = 0;
-
-                while (c < 100)
-                {
-                    Ray secondaryRays = new Ray(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation));
-                    Physics.Raycast(secondaryRays, out RaycastHit secondaryHits);
-                    Debug.DrawRay(firePoint.position, firePoint.forward + new Vector3(0, 0, deviation), Color.blue, 2f);
-                    bulletLine.SetPosition(0, ray.origin);
-                    bulletLine.SetPosition(1, secondaryHits.point);
-                    bulletLine.SetPosition(2, (secondaryHits.point + (reflectionDepth * Vector3.Reflect(firePoint.forward + new Vector3(0, 0, deviation), secondaryHits.normal))));
-                    c++;
-                }
-
-                Debug.Log($"c = {c}");
                 
             }
         }
@@ -184,6 +182,8 @@ public class Shooting : MonoBehaviour
             bulletLine.SetPosition(2, bulletLine.GetPosition(1));
         }
 
+        //StartCoroutine(checkWait());
+
         bulletLine.enabled = true;
         index++;
         yield return new WaitForSeconds(0.1f);
@@ -191,14 +191,7 @@ public class Shooting : MonoBehaviour
 
 
         gameTimeManager.NormalTimeRestore();
-
-        //if (hitPlayer) 
-        //    Time.timeScale = 0;
-        //if (shieldCheck)
-        //    Time.timeScale = 0;
-
-        //if (!shieldCheck && !hitPlayer)
-        //    Time.timeScale = 1;
+        inShoot = false;
 
     }
 

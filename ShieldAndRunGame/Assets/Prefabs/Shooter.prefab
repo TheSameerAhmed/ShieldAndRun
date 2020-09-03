@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: adcd56243a3c5a14bbc5dd5aa887ea2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,6 +121,7 @@ MonoBehaviour:
   deviation: 0
   targetDisplay: {fileID: 0}
   testValue: 9
+  gameTimeManager: {fileID: 0}
 --- !u!1 &635824420886962833
 GameObject:
   m_ObjectHideFlags: 0
