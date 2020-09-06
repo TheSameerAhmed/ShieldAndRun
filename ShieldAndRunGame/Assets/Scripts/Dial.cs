@@ -10,13 +10,15 @@ public class Dial : MonoBehaviour
 
     public bool startTimer;
     
-    float timeLeft;
+    public float timeLeft;
+
+    public float totalTime;
 
     // Start is called before the first frame update
     void Awake()
     {
         startTimer = false;
-        timeLeft = coinManager.slowTime;        
+        //timeLeft = coinManager.slowTime;        
     }
 
     // Update is called once per frame
@@ -24,16 +26,19 @@ public class Dial : MonoBehaviour
     {
         //Debug.Log(startTimer);
         //Debug.Log(timeLeft);
-
-        if (timeLeft > 0 && startTimer)
+        if (startTimer)
         {
-            timeLeft -= Time.unscaledDeltaTime;
-            timerDial.fillAmount = timeLeft / coinManager.slowTime;
-            Debug.Log(timerDial.fillAmount);
-            Debug.Log($"tl {timerDial.fillAmount}");
-            Debug.Log($"cs {coinManager.slowTime}");
+            if (timeLeft > 0 && startTimer)
+            {
+                timeLeft -= Time.unscaledDeltaTime;
+                timerDial.fillAmount = timeLeft / totalTime;
+                //Debug.Log(timerDial.fillAmount);
+                //Debug.Log($"tl {timerDial.fillAmount}");
+                //Debug.Log($"cs {coinManager.slowTime}");
+            }
+            if (timeLeft < 0 && startTimer)
+                startTimer = false;
+
         }
-        if (timeLeft < 0 && startTimer)
-            startTimer = false;
     }
 }

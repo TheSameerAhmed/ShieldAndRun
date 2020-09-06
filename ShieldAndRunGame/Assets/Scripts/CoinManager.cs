@@ -16,10 +16,12 @@ public class CoinManager : MonoBehaviour
     [SerializeField] GameTimeManager gameTimeManager;
 
     public bool inSlowTimePower;
-    
+
+    public bool inShieldPower;
+
     bool shieldPowerUp;
     bool slowTimePowerUp;
-    float shieldTime = 1.5f;
+    float shieldTime = 8f;
  
     float fixedDelta;
     float slowness = 0.1f;
@@ -30,16 +32,18 @@ public class CoinManager : MonoBehaviour
     {
         displayCoins.text = "0";
         fixedDelta = Time.fixedDeltaTime;
+        
         shieldPowerUp = false;
         slowTimePowerUp = false;
         inSlowTimePower = false;
+        inShieldPower = false;
     }
 
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.G) && shieldPowerUp)
         {
-            ShieldPower();
+            StartCoroutine(ShieldPower());
         }
         else if(Input.GetKeyDown(KeyCode.J) && slowTimePowerUp)
         {
@@ -57,6 +61,8 @@ public class CoinManager : MonoBehaviour
     {
         displayCoins.text = $"{coins.coinsColected}";
         if(inSlowTimePower == false)
+            CheckPowers();
+        if (inShieldPower == false)
             CheckPowers();
     }
 
@@ -85,14 +91,36 @@ public class CoinManager : MonoBehaviour
         }
     }
 
-    void ShieldPower()
+    IEnumerator ShieldPower()
     {
         coins.coinsColected -= 5;
-        UpdateDisplayCoins();
+        inShieldPower = true;
+
+        HaltAllPowerUps();
+        displayCoins.text = $"{coins.coinsColected}";
+
+        var dialCreated = Instantiate(dial, canvas.transform, false);
+        dialCreated.GetComponent<Dial>().timeLeft = shieldTime;
+        dialCreated.GetComponent<Dial>().totalTime = shieldTime;
+        dialCreated.GetComponent<Dial>().startTimer = true;
+
+        Debug.Log("Creating shield");
 
         var shield = Instantiate(shieldPowerObject, player.transform, false);
-        Destroy(shield, shieldTime); 
 
+        yield return new WaitForSecondsRealtime(shieldTime);
+
+        Debug.Log("done shielding");
+
+        UpdateDisplayCoins();
+        CheckPowers();
+
+        Destroy(dialCreated, 0.1f);
+        Destroy(shield, 0.2f);
+
+        inShieldPower = false;
+
+        yield break;    
         // Shield player by not getting affected by the laser for some time span or time till level finishes, whatever comes first.
 
     }
@@ -108,7 +136,9 @@ public class CoinManager : MonoBehaviour
 
         var dialCreated = Instantiate(dial, canvas.transform, false);
 
-        dialCreated.GetComponent<Dial>().startTimer = true;
+        dialCreated.GetComponent<Dial>().timeLeft = slowTime;
+        dialCreated.GetComponent<Dial>().totalTime = slowTime;
+        dialCreated.GetComponent<Dial>().startTimer = true;        
 
         Debug.Log("Slowing time down");
 

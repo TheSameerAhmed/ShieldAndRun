@@ -122,6 +122,8 @@ MonoBehaviour:
   targetDisplay: {fileID: 0}
   testValue: 9
   gameTimeManager: {fileID: 0}
+  coinManager: {fileID: 0}
+  material: {fileID: 0}
 --- !u!1 &635824420886962833
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,6 +228,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 0}
   - {x: 2, y: 0, z: 0}
   - {x: 0, y: 0, z: 2}
+  - {x: 0, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.25
