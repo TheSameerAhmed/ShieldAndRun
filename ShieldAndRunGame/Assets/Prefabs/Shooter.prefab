@@ -120,10 +120,13 @@ MonoBehaviour:
   shootingRange: {fileID: 0}
   deviation: 0
   targetDisplay: {fileID: 0}
-  testValue: 9
+  testValue: 7
   gameTimeManager: {fileID: 0}
   coinManager: {fileID: 0}
   material: {fileID: 0}
+  laserBeam: {fileID: 0}
+  maxReflectionCount: 7
+  maxDistance: 200
 --- !u!1 &635824420886962833
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,7 +48,7 @@ public class Shooting : MonoBehaviour
     void Awake()
     {
         //for (int i = 0; i < 5; i++)
-        //    targetIndex[i] = Random.Range(5, 10);
+        //    targetIndex[i] = UnityEngine.Random.Range(5, 10);
 
         for (int i = 0; i < 5; i++)
             targetIndex[i] = testValue;
@@ -94,7 +94,7 @@ public class Shooting : MonoBehaviour
 
         inShoot = true;
 
-        laserBeam.DrawInitialPredictions(firePoint.position, firePoint.forward, 7, 7);
+        laserBeam.DrawInitialPredictions(firePoint.position, firePoint.forward, 7, 7, bulletLine);
         laserBeam.DisplayLines();
         laserBeam.ClearList();
 

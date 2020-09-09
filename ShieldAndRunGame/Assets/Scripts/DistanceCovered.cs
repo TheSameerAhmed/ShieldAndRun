@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class DistanceCovered : MonoBehaviour
 {
 
-    [SerializeField] Transform track;
-    [SerializeField] Transform player;
+    public Transform track;
+    public Transform player;
 
     int totalDistance;
     int currentDistanceCovered;

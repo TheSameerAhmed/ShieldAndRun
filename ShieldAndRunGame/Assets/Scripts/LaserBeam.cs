@@ -9,8 +9,10 @@ public class LaserBeam : MonoBehaviour
     public int maxReflectionCount = 7;
     public float maxDistance = 200;
 
-    [SerializeField] LineRenderer beam;
+    LineRenderer beam;
+    
     [SerializeField] GameTimeManager gameTime;
+    [SerializeField] GameManager gameManager;
     [SerializeField] GameObject shieldEffect;
     [SerializeField] GameObject gameOverEffect;
 
@@ -18,6 +20,7 @@ public class LaserBeam : MonoBehaviour
     [SerializeField] Transform leftShield;
     [SerializeField] Transform player;
 
+    public List<Tuple<GameObject, bool>> lifeStatus;
 
     List<Vector3> tangents = new List<Vector3>();
 
@@ -51,9 +54,10 @@ public class LaserBeam : MonoBehaviour
         DrawPredictions(position, direction, reflectionsRemaining - 1);
     }
 
-    public void DrawInitialPredictions(Vector3 position, Vector3 direction, int reflectionsRemaining, int originalNumber)
+    public void DrawInitialPredictions(Vector3 position, Vector3 direction, int reflectionsRemaining, int originalNumber, LineRenderer laserLine)
     {
         bool hitPlayer = false;
+        beam = laserLine;
 
         Debug.Log($"number: {reflectionsRemaining}");
         
@@ -70,7 +74,8 @@ public class LaserBeam : MonoBehaviour
                 Instantiate(gameOverEffect, player);
                 Debug.Log("hit the player!");
                 hitPlayer = true;
-                gameTime.HaltTime(); 
+
+                gameManager.LifeLost();                
             }
             else if (initialHit.collider.gameObject.CompareTag("Shield"))
             {
@@ -86,8 +91,6 @@ public class LaserBeam : MonoBehaviour
                     GameObject temp = Instantiate(shieldEffect, leftShield);
                     Destroy(temp, 2f);
                 }
-
-                gameTime.HaltTime();
 
             }
         }
@@ -123,8 +126,6 @@ public class LaserBeam : MonoBehaviour
     public void DisplayLines()
     {
         beam.positionCount = tangents.Count;
-
-        Debug.Log(beam.positionCount);
 
         Vector3[] inp = new Vector3[tangents.Count];
 
